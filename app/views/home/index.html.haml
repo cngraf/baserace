@@ -1,2 +1,4 @@
-%h1 Home#index
-%p Find me in app/views/home/index.html.haml
+%h1 Search by Match ID
+=form_tag(action: :predict) do
+  = search_field_tag :match_id
+  = submit_tag 'Get prediction'

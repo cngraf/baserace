@@ -18,7 +18,7 @@ class LiveGameInterface
     response = _request_live_match_data
     return RuntimeError, "couldn't get match - response code #{response[:code]}" unless response[:match]
     parsed_match_data = _parse_match_data(response[:match])
-    GetPrediction.new(parsed_match_data).call
+    GetPrediction.new(parsed_match_data).call if parsed_match_data
   end
 
   private
@@ -63,6 +63,6 @@ class LiveGameInterface
   end
 
   def _api_key
-    File.open("secrets/api_key.txt", 'r').read    
+    Rails.application.secrets.steam_api_key
   end
 end

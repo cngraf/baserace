@@ -3,7 +3,7 @@ require 'pry'
 
 class GetPrediction
 
-  ML_MODEL_ID = 'ml-CiaN2KJEIzD'
+  ML_MODEL_ID = Rails.application.secrets.ml_model_id
 
   def initialize(row)
     @row      = row.split(',').map(&:to_s)
@@ -20,7 +20,8 @@ class GetPrediction
 
     @url = @response.realtime_endpoint_info.endpoint_url
 
-    @headers = File.open('assets/headers.csv').read.chomp.split(',').tap { |a| a.delete('radiant_win') }
+    @headers = "row_id,minutes,radiant_1nw_hero_id,radiant_1nw_net_worth,radiant_2nw_hero_id,radiant_2nw_net_worth,radiant_3nw_hero_id,radiant_3nw_net_worth,radiant_4nw_hero_id,radiant_4nw_net_worth,radiant_5nw_hero_id,radiant_5nw_net_worth,dire_1nw_hero_id,dire_1nw_net_worth,dire_2nw_hero_id,dire_2nw_net_worth,dire_3nw_hero_id,dire_3nw_net_worth,dire_4nw_hero_id,dire_4nw_net_worth,dire_5nw_hero_id,dire_5nw_net_worth".split(',')
+
     @record = @headers.zip(@row).to_h
 
     @request = {
@@ -32,7 +33,6 @@ class GetPrediction
 
   def call
     prediction = @client.predict(@request).prediction
-    puts "Radiant odds: #{prediction.predicted_scores.values.first.round(3)}"
-    prediction
+    "Radiant wins #{prediction.predicted_scores.first.last.round(3)}\% of the time."
   end
 end
